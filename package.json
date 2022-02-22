@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build": "esbuild ./game/main.js --bundle --outfile=game.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.14.23",
+    "kaboom": "^2000.2.8"
+  }
+}
