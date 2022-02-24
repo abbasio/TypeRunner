@@ -3,6 +3,7 @@
     "build": "esbuild ./code/main.js --bundle --outfile=game.js"
   },
   "dependencies": {
+    "axios": "^0.26.0",
     "esbuild": "^0.14.23",
     "kaboom": "^2000.2.8"
   }
