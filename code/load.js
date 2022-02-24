@@ -9,4 +9,5 @@ export default () => {
       },
     },
   });
+  loadSound('error', '../public/sounds/error.wav');
 };

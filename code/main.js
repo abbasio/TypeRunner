@@ -2,7 +2,6 @@
 import kaboom from 'kaboom';
 import load from './load';
 import axios from 'axios';
-import { ca } from 'date-fns/locale';
 
 kaboom({
   debug: true,
@@ -16,6 +15,10 @@ load();
 
 //---------STARTING OBJECTS
 scene('game', (speed) => {
+  let timer = 0;
+  loop(1, () => {
+    timer++;
+  });
   const runner = add([
     sprite('runner', {
       anim: 'run',
@@ -37,7 +40,6 @@ scene('game', (speed) => {
         const response = await axios.get('https://api.quotable.io/random', {
           timeout: 1000,
         });
-        console.log(response);
         const quote = response.data.content;
         const untypedWords = quote.split('');
         untypedWords.forEach((letter, index) => {
@@ -47,6 +49,7 @@ scene('game', (speed) => {
             pos(index * 50 + 300, 360),
             opacity(0.33),
             scale(6),
+            `letter${index}`,
           ]);
         });
         add([
@@ -99,6 +102,9 @@ scene('game', (speed) => {
   };
 
   const redLetter = (char, index) => {
+    play('error');
+    shake();
+    destroyAll(`letter${index}`);
     add([
       text(char),
       pos(index * 50 + 300, 360),
@@ -143,7 +149,6 @@ scene('game', (speed) => {
 
   runner.onCollide('error', () => {
     runner.use(move(RIGHT, speed / 2));
-    shake();
   });
   runner.onCollide('correct', () => {
     runner.use(move(RIGHT, speed));
@@ -151,6 +156,8 @@ scene('game', (speed) => {
 
   runner.onCollide('end', () => {
     console.log('Finished!');
+    console.log(`Time was ${timer}s`);
+    console.log(words.length);
   });
 });
 
@@ -159,17 +166,46 @@ scene('game', (speed) => {
 scene('menu', () => {
   add([text('TYPE/RUNNER'), pos(600, 240), origin('center'), scale(6)]);
   add([
-    text('> Press Enter', {
-      size: 20,
-    }),
-    color(255, 255, 255),
+    rect(320, 40),
     pos(600, 360),
     origin('center'),
+    area(),
+    color(255, 255, 255),
+    'easy',
   ]);
+  add([text('Easy'), pos(600, 360), origin('center'), scale(2)]);
+  add([
+    rect(320, 40),
+    pos(600, 410),
+    origin('center'),
+    area(),
+    color(255, 255, 255),
+    'medium',
+  ]);
+  add([text('Medium'), pos(600, 410), origin('center'), scale(2)]);
+  add([
+    rect(320, 40),
+    pos(600, 460),
+    origin('center'),
+    area(),
+    color(255, 255, 255),
+    'hard',
+  ]);
+  add([text('Hard'), pos(600, 460), origin('center'), scale(2)]);
+  add([
+    rect(320, 40),
+    pos(600, 510),
+    origin('center'),
+    area(),
+    color(255, 255, 255),
+    'impossible',
+  ]);
+  add([text('Impossible'), pos(600, 510), origin('center'), scale(2)]);
 
-  onKeyPress('enter', () => {
-    go('game', 300);
-  });
+  onClick('easy', () => go('game', 100));
+  onClick('medium', () => go('game', 200));
+  onClick('hard', () => go('game', 300));
+  onClick('impossible', () => go('game', 400));
 });
 
 go('menu');
