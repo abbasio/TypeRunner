@@ -30,8 +30,9 @@ scene('game', () => {
   //---------GET RANDOM QUOTE
   const words = [];
   load(
-    new Promise(async (resolve, reject) => {
+    new Promise(async () => {
       const response = await axios.get('https://api.quotable.io/random');
+      console.log(response);
       const quote = response.data.content;
       const untypedWords = quote.split('');
       untypedWords.forEach((letter, index) => {
