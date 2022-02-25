@@ -15,10 +15,6 @@ load();
 
 //---------STARTING OBJECTS
 scene('game', (speed) => {
-  let timer = 0;
-  loop(1, () => {
-    timer++;
-  });
   const runner = add([
     sprite('runner', {
       anim: 'run',
@@ -34,12 +30,14 @@ scene('game', (speed) => {
 
   //---------GET RANDOM QUOTE
   const words = [];
+  const quoteData = [];
   load(
     new Promise(async () => {
       try {
         const response = await axios.get('https://api.quotable.io/random', {
           timeout: 1000,
         });
+        quoteData.push(response.data);
         const quote = response.data.content;
         const untypedWords = quote.split('');
         untypedWords.forEach((letter, index) => {
@@ -89,6 +87,7 @@ scene('game', (speed) => {
   //---------TYPED OBJECTS
 
   const typedWords = [];
+  const underline = add([rect(30, 5), pos(300, 420)]);
 
   const whiteLetter = (char, index) => {
     add([
@@ -124,6 +123,7 @@ scene('game', (speed) => {
     typedWords.push(char);
     const index = typedWords.length - 1;
     if (index <= words.length - 1) {
+      underline.pos.x += 50;
       if (typedWords[index] === words[index]) {
         whiteLetter(char, index);
       } else {
@@ -157,6 +157,7 @@ scene('game', (speed) => {
   runner.onCollide('end', () => {
     console.log('Finished!');
     console.log(`Time was ${timer}s`);
+    console.log(quoteData);
     console.log(words.length);
   });
 });
@@ -166,46 +167,77 @@ scene('game', (speed) => {
 scene('menu', () => {
   add([text('TYPE/RUNNER'), pos(600, 240), origin('center'), scale(6)]);
   add([
-    rect(320, 40),
+    text('Easy'),
     pos(600, 360),
     origin('center'),
     area(),
-    color(255, 255, 255),
+    scale(2),
+    {
+      selected: false,
+      regularText: 'Easy',
+      selectedText: '> Easy',
+    },
     'easy',
+    'button',
   ]);
-  add([text('Easy'), pos(600, 360), origin('center'), scale(2)]);
   add([
-    rect(320, 40),
+    text('Medium'),
     pos(600, 410),
     origin('center'),
     area(),
-    color(255, 255, 255),
+    scale(2),
+    {
+      selected: false,
+      regularText: 'Medium',
+      selectedText: '> Medium',
+    },
     'medium',
+    'button',
   ]);
-  add([text('Medium'), pos(600, 410), origin('center'), scale(2)]);
   add([
-    rect(320, 40),
+    text('Hard'),
     pos(600, 460),
     origin('center'),
     area(),
-    color(255, 255, 255),
+    scale(2),
+    {
+      selected: false,
+      regularText: 'Hard',
+      selectedText: '> Hard',
+    },
     'hard',
+    'button',
   ]);
-  add([text('Hard'), pos(600, 460), origin('center'), scale(2)]);
   add([
-    rect(320, 40),
+    text('Impossible'),
     pos(600, 510),
     origin('center'),
     area(),
-    color(255, 255, 255),
+    scale(2),
+    {
+      selected: false,
+      regularText: 'Impossible',
+      selectedText: '> Impossible',
+    },
     'impossible',
+    'button',
   ]);
-  add([text('Impossible'), pos(600, 510), origin('center'), scale(2)]);
 
-  onClick('easy', () => go('game', 100));
-  onClick('medium', () => go('game', 200));
-  onClick('hard', () => go('game', 300));
+  onUpdate('button', (button) => {
+    if (button.isHovering()) {
+      button.text = button.selectedText;
+    } else {
+      button.text = button.regularText;
+    }
+  });
+
+  onClick('easy', () => go('game', 200));
+  onClick('medium', () => go('game', 275));
+  onClick('hard', () => go('game', 333));
   onClick('impossible', () => go('game', 400));
 });
+
+//---------RUN COMPLETE
+scene('complete', (quote) => {});
 
 go('menu');
