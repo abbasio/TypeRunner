@@ -1,3 +1,6 @@
 node_modules
 game.js
 game.js.map
+.DS_Store
+public/.DS_Store
+public/sounds/.DS_Store

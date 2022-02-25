@@ -10,4 +10,8 @@ export default () => {
     },
   });
   loadSound('error', '../public/sounds/error.wav');
+  loadSound('death', '../public/sounds/death.wav');
+  loadSound('select', '../public/sounds/select.wav');
+  loadSound('click', '../public/sounds/click.wav');
+  loadSound('win', '../public/sounds/win.wav');
 };

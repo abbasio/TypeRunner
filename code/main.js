@@ -14,19 +14,43 @@ kaboom({
 load();
 
 //---------STARTING OBJECTS
-scene('game', (speed) => {
+scene('game', (difficulty) => {
+  console.log(difficulty);
+  let speed;
+  switch (difficulty) {
+    case 1:
+      speed = 200;
+      break;
+    case 2:
+      speed = 275;
+      break;
+    case 3:
+      speed = 350;
+      break;
+    case 4:
+      speed = 450;
+      break;
+  }
+
+  console.log(speed);
   const runner = add([
     sprite('runner', {
       anim: 'run',
     }),
     area(),
-    pos(0, 120),
+    pos(-200, 120),
     scale(2),
     body(),
     move(RIGHT, speed),
   ]);
 
-  add([rect(300, 50), pos(0, 360), area(), solid(), color(255, 255, 255)]);
+  add([
+    rect(1500, 360),
+    pos(-1200, 360),
+    area(),
+    solid(),
+    color(255, 255, 255),
+  ]);
 
   //---------GET RANDOM QUOTE
   const words = [];
@@ -50,19 +74,30 @@ scene('game', (speed) => {
             `letter${index}`,
           ]);
         });
-        add([
-          rect(300, 50),
+        const endPlatform = add([
+          rect(2000, 360),
           pos(untypedWords.length * 50 + 300, 360),
           area(),
           solid(),
           color(255, 255, 255),
+        ]);
+        const finishLine = add([
+          rect(10, 10),
+          pos(untypedWords.length * 50 + 600, 350),
+          area(),
+          solid(),
+          color(0, 0, 0),
           'end',
         ]);
       } catch (error) {
         console.log(error);
-        const quote =
-          'Hello! This quote is generated if the random quote API fails';
-        const untypedWords = quote.split('');
+        const quote = {
+          content:
+            'Hello! This quote is generated if the random quote API fails',
+          author: 'Omar Abbasi',
+        };
+        quoteData.push(quote);
+        const untypedWords = quote.content.split('');
         untypedWords.forEach((letter, index) => {
           words.push(letter);
           add([
@@ -73,7 +108,7 @@ scene('game', (speed) => {
           ]);
         });
         add([
-          rect(300, 50),
+          rect(100, 3600),
           pos(untypedWords.length * 50 + 300, 360),
           area(),
           solid(),
@@ -84,12 +119,27 @@ scene('game', (speed) => {
     })
   );
 
+  //---------SCORING
+
+  let scoreValue = 0;
+  const score = add([text('SCORE: 0', pos(0, 0)), fixed(), scale(3)]);
+  let errorValue = 0;
+  const errors = add([
+    text('ERRORS: 0'),
+    pos(1200, 0),
+    fixed(),
+    origin('topright'),
+    color(255, 255, 255),
+    scale(3),
+  ]);
+
   //---------TYPED OBJECTS
 
   const typedWords = [];
   const underline = add([rect(30, 5), pos(300, 420)]);
 
   const whiteLetter = (char, index) => {
+    scoreValue += 10;
     add([
       text(char),
       pos(index * 50 + 300, 360),
@@ -101,6 +151,9 @@ scene('game', (speed) => {
   };
 
   const redLetter = (char, index) => {
+    errorValue++;
+    errors.color.g = 0;
+    errors.color.b = 0;
     play('error');
     shake();
     destroyAll(`letter${index}`);
@@ -117,7 +170,7 @@ scene('game', (speed) => {
 
   //---------TYPING
 
-  const wpm = add([rect(0, 0), pos(0, 360), move(RIGHT, speed)]);
+  const wpm = add([rect(0, 0), pos(-200, 360), move(RIGHT, speed)]);
 
   onCharInput((char) => {
     typedWords.push(char);
@@ -134,6 +187,8 @@ scene('game', (speed) => {
 
   onUpdate(() => {
     camPos(wpm.pos);
+    score.text = `SCORE: ${scoreValue}`;
+    errors.text = `ERRORS: ${errorValue}`;
   });
 
   runner.onUpdate(() => {
@@ -143,7 +198,8 @@ scene('game', (speed) => {
     ) {
       shake();
       destroy(runner);
-      go('menu');
+      play('death');
+      go('gameover', scoreValue, errorValue, difficulty, quoteData[0]);
     }
   });
 
@@ -155,10 +211,8 @@ scene('game', (speed) => {
   });
 
   runner.onCollide('end', () => {
-    console.log('Finished!');
-    console.log(`Time was ${timer}s`);
-    console.log(quoteData);
-    console.log(words.length);
+    play('win');
+    go('complete', scoreValue, errorValue, difficulty, quoteData[0]);
   });
 });
 
@@ -173,7 +227,6 @@ scene('menu', () => {
     area(),
     scale(2),
     {
-      selected: false,
       regularText: 'Easy',
       selectedText: '> Easy',
     },
@@ -187,7 +240,6 @@ scene('menu', () => {
     area(),
     scale(2),
     {
-      selected: false,
       regularText: 'Medium',
       selectedText: '> Medium',
     },
@@ -201,7 +253,6 @@ scene('menu', () => {
     area(),
     scale(2),
     {
-      selected: false,
       regularText: 'Hard',
       selectedText: '> Hard',
     },
@@ -215,7 +266,6 @@ scene('menu', () => {
     area(),
     scale(2),
     {
-      selected: false,
       regularText: 'Impossible',
       selectedText: '> Impossible',
     },
@@ -231,13 +281,196 @@ scene('menu', () => {
     }
   });
 
-  onClick('easy', () => go('game', 200));
-  onClick('medium', () => go('game', 275));
-  onClick('hard', () => go('game', 333));
-  onClick('impossible', () => go('game', 400));
+  onClick('easy', () => go('game', 1));
+  onClick('medium', () => go('game', 2));
+  onClick('hard', () => go('game', 3));
+  onClick('impossible', () => go('game', 4));
+  onClick('button', () => play('select'));
 });
 
 //---------RUN COMPLETE
-scene('complete', (quote) => {});
+scene('complete', (score, errors, difficulty, quote) => {
+  let totalScore = (score - errors * 10) * difficulty;
+  add([
+    text('QUOTE COMPLETE!'),
+    pos(600, 100),
+    scale(4),
+    color(0, 255, 0),
+    origin('center'),
+  ]);
+
+  add([
+    text(`BASE SCORE: ${score}`),
+    pos(600, 200),
+    scale(3),
+    origin('center'),
+  ]);
+
+  add([
+    text(`DIFFICULTY BONUS: X${difficulty}`),
+    pos(600, 250),
+    scale(3),
+    origin('center'),
+  ]);
+
+  if (errors === 0) {
+    totalScore += 1000;
+    add([
+      text('PERFECT BONUS: +1,000'),
+      color(0, 255, 0),
+      pos(600, 300),
+      scale(3),
+      origin('center'),
+    ]);
+  } else {
+    add([
+      text(`ERRORS: ${errors}`),
+      pos(600, 300),
+      color(255, 0, 0),
+      scale(3),
+      origin('center'),
+    ]);
+  }
+
+  add([
+    text(`TOTAL SCORE: ${totalScore}`),
+    pos(600, 400),
+    scale(4),
+    origin('center'),
+  ]);
+  add([
+    text('Retry'),
+    pos(600, 450),
+    origin('center'),
+    area(),
+    scale(2),
+    {
+      regularText: 'Retry',
+      selectedText: '> Retry',
+    },
+    'button',
+    'retry',
+  ]);
+  add([
+    text('Return to Menu'),
+    pos(600, 500),
+    origin('center'),
+    area(),
+    scale(2),
+    {
+      regularText: 'Return to Menu',
+      selectedText: '> Return to Menu',
+    },
+    'button',
+    'menu',
+  ]);
+
+  onUpdate('button', (button) => {
+    if (button.isHovering()) {
+      button.text = button.selectedText;
+    } else {
+      button.text = button.regularText;
+    }
+  });
+  onClick('retry', () => go('game', difficulty));
+  onClick('menu', () => go('menu'));
+  onClick('button', () => play('select'));
+
+  add([
+    text(`${quote.content}`, {
+      size: 20,
+      width: 600,
+    }),
+    pos(600, 600),
+    origin('center'),
+    color(0, 255, 255),
+  ]);
+  add([
+    text(`- ${quote.author}`, {
+      size: 20,
+      width: 600,
+    }),
+    pos(600, 700),
+    origin('left'),
+    color(0, 255, 255),
+  ]);
+});
+
+//---------GAME OVER
+scene('gameover', (score, errors, difficulty, quote) => {
+  add([
+    text('GAME OVER'),
+    pos(600, 150),
+    scale(4),
+    color(255, 0, 0),
+    origin('center'),
+  ]);
+
+  add([text(`SCORE: ${score}`), pos(600, 250), scale(3), origin('center')]);
+  add([
+    text(`ERRORS: ${errors}`),
+    pos(600, 350),
+    color(255, 0, 0),
+    scale(3),
+    origin('center'),
+  ]);
+
+  add([
+    text('Retry'),
+    pos(600, 450),
+    origin('center'),
+    area(),
+    scale(2),
+    {
+      regularText: 'Retry',
+      selectedText: '> Retry',
+    },
+    'button',
+    'retry',
+  ]);
+
+  add([
+    text('Return to Menu'),
+    pos(600, 500),
+    origin('center'),
+    area(),
+    scale(2),
+    {
+      regularText: 'Return to Menu',
+      selectedText: '> Return to Menu',
+    },
+    'button',
+    'menu',
+  ]);
+
+  onUpdate('button', (button) => {
+    if (button.isHovering()) {
+      button.text = button.selectedText;
+    } else {
+      button.text = button.regularText;
+    }
+  });
+  onClick('menu', () => go('menu'));
+  onClick('retry', () => go('game', difficulty));
+  onClick('button', () => play('select'));
+  add([
+    text(`${quote.content}`, {
+      size: 20,
+      width: 600,
+    }),
+    pos(600, 600),
+    origin('center'),
+    color(0, 255, 255),
+  ]);
+  add([
+    text(`- ${quote.author}`, {
+      size: 20,
+      width: 600,
+    }),
+    pos(600, 700),
+    origin('left'),
+    color(0, 255, 255),
+  ]);
+});
 
 go('menu');
