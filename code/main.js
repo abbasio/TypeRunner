@@ -213,7 +213,7 @@ scene('game', (difficulty) => {
 
   runner.onCollide('end', () => {
     play('win');
-    go('complete', scoreValue, errorValue, difficulty, quoteData[0]);
+    go('complete', scoreValue, errorValue, difficulty + 1, quoteData[0]);
   });
 });
 
