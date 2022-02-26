@@ -47,13 +47,17 @@ export default (score, errors, difficulty, quote) => {
     scale(4),
     origin('center'),
   ]);
+
+  let currentButton = 0;
   add([
     text('Retry'),
     pos(600, 450),
     origin('center'),
-    area(),
+    area({ scale: 3 }),
     scale(2),
     {
+      num: 0,
+      selected: false,
       regularText: 'Retry',
       selectedText: '> Retry',
     },
@@ -64,9 +68,11 @@ export default (score, errors, difficulty, quote) => {
     text('Return to Menu'),
     pos(600, 500),
     origin('center'),
-    area(),
+    area({ scale: 3 }),
     scale(2),
     {
+      num: 1,
+      selected: false,
       regularText: 'Return to Menu',
       selectedText: '> Return to Menu',
     },
@@ -74,13 +80,34 @@ export default (score, errors, difficulty, quote) => {
     'menu',
   ]);
 
+  const buttons = get('button');
   onUpdate('button', (button) => {
+    if (button.selected) button.text = button.selectedText;
+    else button.text = button.regularText;
+    if (button.num === currentButton) button.selected = true;
     if (button.isHovering()) {
-      button.text = button.selectedText;
+      currentButton = button.num;
     } else {
-      button.text = button.regularText;
+      if (button.num !== currentButton) button.selected = false;
+      else button.selected = true;
     }
   });
+
+  onKeyPress('down', () => {
+    if (currentButton === buttons.length - 1) currentButton = 0;
+    else currentButton++;
+  });
+  onKeyPress('up', () => {
+    if (currentButton === 0) currentButton = buttons.length - 1;
+    else currentButton--;
+  });
+  onKeyPress('enter', () => {
+    play('select');
+    const selectedButton = buttons.filter((button) => button.selected);
+    if (selectedButton[0].num === 1) go('menu');
+    else go('game', difficulty);
+  });
+
   onClick('retry', () => go('game', difficulty));
   onClick('menu', () => go('menu'));
   onClick('button', () => play('select'));

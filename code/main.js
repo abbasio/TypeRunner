@@ -17,26 +17,23 @@ kaboom({
 });
 load();
 
-//---------STARTING OBJECTS
+//---------GAME
 scene('game', (difficulty) => {
-  console.log(difficulty);
   let speed;
   switch (difficulty) {
-    case 1:
+    case 0:
       speed = 200;
       break;
-    case 2:
+    case 1:
       speed = 275;
       break;
-    case 3:
+    case 2:
       speed = 350;
       break;
-    case 4:
+    case 3:
       speed = 450;
       break;
   }
-
-  console.log(speed);
   const runner = add([
     sprite('runner', {
       anim: 'run',
