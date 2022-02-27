@@ -105,10 +105,10 @@ export default (score, errors, difficulty, quote) => {
     play('select');
     const selectedButton = buttons.filter((button) => button.selected);
     if (selectedButton[0].num === 1) go('menu');
-    else go('game', difficulty);
+    else go('game', difficulty - 1);
   });
 
-  onClick('retry', () => go('game', difficulty));
+  onClick('retry', () => go('game', difficulty - 1));
   onClick('menu', () => go('menu'));
   onClick('button', () => play('select'));
 
