@@ -1,9 +1,11 @@
+import { DEFAULT_WIDTH } from '../main';
 export default () => {
-  add([text('TYPE/RUNNER'), pos(600, 240), origin('center'), scale(6)]);
+  const CENTER = DEFAULT_WIDTH / 2;
+  add([text('TYPE/RUNNER'), pos(CENTER, 240), origin('center'), scale(6)]);
   let currentButton = 0;
   add([
     text('Easy'),
-    pos(600, 360),
+    pos(CENTER, 360),
     origin('center'),
     area({ scale: 3 }),
     scale(2),
@@ -18,7 +20,7 @@ export default () => {
   ]);
   add([
     text('Medium'),
-    pos(600, 410),
+    pos(CENTER, 410),
     origin('center'),
     area({ scale: 3 }),
     scale(2),
@@ -33,7 +35,7 @@ export default () => {
   ]);
   add([
     text('Hard'),
-    pos(600, 460),
+    pos(CENTER, 460),
     origin('center'),
     area({ scale: 3 }),
     scale(2),
@@ -48,7 +50,7 @@ export default () => {
   ]);
   add([
     text('Impossible'),
-    pos(600, 510),
+    pos(CENTER, 510),
     origin('center'),
     area({ scale: 3 }),
     scale(2),

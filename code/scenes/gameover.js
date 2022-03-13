@@ -1,16 +1,18 @@
+import { DEFAULT_WIDTH } from '../main';
 export default (score, errors, difficulty, quote) => {
+  const CENTER = DEFAULT_WIDTH / 2;
   add([
     text('GAME OVER'),
-    pos(600, 150),
+    pos(CENTER, 150),
     scale(4),
     color(255, 0, 0),
     origin('center'),
   ]);
 
-  add([text(`SCORE: ${score}`), pos(600, 250), scale(3), origin('center')]);
+  add([text(`SCORE: ${score}`), pos(CENTER, 250), scale(3), origin('center')]);
   add([
     text(`ERRORS: ${errors}`),
-    pos(600, 350),
+    pos(CENTER, 350),
     color(255, 0, 0),
     scale(3),
     origin('center'),
@@ -19,7 +21,7 @@ export default (score, errors, difficulty, quote) => {
   let currentButton = 0;
   add([
     text('Retry'),
-    pos(600, 450),
+    pos(CENTER, 450),
     origin('center'),
     area({ scale: 3 }),
     scale(2),
@@ -35,7 +37,7 @@ export default (score, errors, difficulty, quote) => {
 
   add([
     text('Return to Menu'),
-    pos(600, 500),
+    pos(CENTER, 500),
     origin('center'),
     area({ scale: 3 }),
     scale(2),
@@ -86,7 +88,7 @@ export default (score, errors, difficulty, quote) => {
       size: 20,
       width: 600,
     }),
-    pos(600, 600),
+    pos(CENTER, 600),
     origin('center'),
     color(0, 255, 255),
   ]);
@@ -95,7 +97,7 @@ export default (score, errors, difficulty, quote) => {
       size: 20,
       width: 600,
     }),
-    pos(600, 700),
+    pos(CENTER, 700),
     origin('left'),
     color(0, 255, 255),
   ]);

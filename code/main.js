@@ -8,13 +8,18 @@ import gameover from './scenes/gameover';
 import complete from './scenes/complete';
 import submitscore from './scenes/submitscore';
 
-//---------FIREBASE
+const ratio = Math.max(
+  window.innerWidth / window.innerHeight,
+  window.innerHeight / window.innerWidth
+);
+export const DEFAULT_HEIGHT = 720;
+export const DEFAULT_WIDTH = ratio * DEFAULT_HEIGHT;
 
 kaboom({
   debug: true,
   background: [0, 0, 0],
-  width: 1200,
-  height: 720,
+  width: DEFAULT_WIDTH,
+  height: DEFAULT_HEIGHT,
   crisp: true,
   font: 'sinko',
 });
@@ -130,7 +135,7 @@ scene('game', (difficulty) => {
   let errorValue = 0;
   const errors = add([
     text('ERRORS: 0'),
-    pos(1200, 0),
+    pos(DEFAULT_WIDTH, 0),
     fixed(),
     origin('topright'),
     color(255, 255, 255),
