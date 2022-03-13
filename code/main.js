@@ -6,6 +6,9 @@ import axios from 'axios';
 import mainmenu from './scenes/mainmenu';
 import gameover from './scenes/gameover';
 import complete from './scenes/complete';
+import submitscore from './scenes/submitscore';
+
+//---------FIREBASE
 
 kaboom({
   debug: true,
@@ -221,5 +224,6 @@ scene('game', (difficulty) => {
 scene('complete', complete);
 scene('gameover', gameover);
 scene('menu', mainmenu);
+scene('submitscore', submitscore);
 
 go('menu');

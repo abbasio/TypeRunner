@@ -4,3 +4,5 @@ game.js.map
 .DS_Store
 public/.DS_Store
 public/sounds/.DS_Store
+out/
+firebaseconfig.js

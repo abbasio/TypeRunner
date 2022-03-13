@@ -9,6 +9,8 @@ export default () => {
       },
     },
   });
+  loadSprite('fullscreen', '../public/sprites/fullscreen.png');
+
   loadSound('error', '../public/sounds/error.wav');
   loadSound('death', '../public/sounds/death.wav');
   loadSound('select', '../public/sounds/select.wav');
