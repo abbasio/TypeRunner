@@ -7,6 +7,7 @@ import mainmenu from './scenes/mainmenu';
 import gameover from './scenes/gameover';
 import complete from './scenes/complete';
 import submitscore from './scenes/submitscore';
+import highscores from './scenes/highscores';
 
 const ratio = Math.max(
   window.innerWidth / window.innerHeight,
@@ -230,5 +231,6 @@ scene('complete', complete);
 scene('gameover', gameover);
 scene('menu', mainmenu);
 scene('submitscore', submitscore);
+scene('highscores', highscores);
 
 go('menu');

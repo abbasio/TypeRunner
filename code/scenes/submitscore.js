@@ -4,20 +4,22 @@ import { getDatabase, ref, push } from 'firebase/database';
 import config from '../../firebaseconfig';
 import { DEFAULT_WIDTH } from '../main';
 
-export default (score = 0) => {
+//---------FIREBASE
+const app = initializeApp(config);
+function saveScore(name, score) {
+  const db = getDatabase();
+  push(ref(db, 'scores'), {
+    name,
+    score,
+  });
+}
+//---------SCENE
+export default (score) => {
   const CENTER = DEFAULT_WIDTH / 2;
   let name = '';
-  onCharInput((char) => {
-    if (name.length < 5) {
-      name += char;
-      console.log(name);
-    }
-  });
-  onKeyPress('backspace', () => {
-    name = name.slice(0, name.length - 1);
-    console.log(name);
-  });
+
   add([text('SUBMIT SCORE'), pos(CENTER, 100), scale(4), origin('center')]);
+
   add([
     text(`Your Score: ${score}`),
     pos(CENTER, 200),
@@ -38,28 +40,35 @@ export default (score = 0) => {
     origin('center'),
   ]);
 
-  onUpdate(() => {
-    userName.text = name.toUpperCase();
+  const warning = add([
+    text(''),
+    pos(CENTER, 450),
+    color(255, 0, 0),
+    scale(2),
+    origin('center'),
+  ]);
+
+  onCharInput((char) => {
+    if (name.length < 3) {
+      name += char;
+    }
   });
-
-  const app = initializeApp(config);
-  function saveScore(name, score) {
-    const db = getDatabase();
-    push(ref(db, 'scores'), {
-      name,
-      score,
-    });
-  }
-
+  onKeyPress('backspace', () => {
+    name = name.slice(0, name.length - 1);
+  });
   onKeyPress('enter', () => {
     if (name.length) {
       saveScore(name, score);
       play('select');
-      go('menu');
+      go('highscores', name.toUpperCase(), score);
     } else {
-      console.log('Name cannot be empty!');
+      warning.text = 'Name cannot be empty!';
       shake();
       play('error');
     }
+  });
+
+  onUpdate(() => {
+    userName.text = name.toUpperCase();
   });
 };
