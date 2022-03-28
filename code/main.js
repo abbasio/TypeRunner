@@ -9,6 +9,7 @@ import complete from './scenes/complete';
 import submitscore from './scenes/submitscore';
 import highscores from './scenes/highscores';
 
+//---------SETUP
 const ratio = Math.max(
   window.innerWidth / window.innerHeight,
   window.innerHeight / window.innerWidth
@@ -62,9 +63,37 @@ scene('game', (difficulty) => {
     color(255, 255, 255),
   ]);
 
-  //---------GET RANDOM QUOTE
+  //---------MAKE PLATFORMS FROM QUOTE
   const words = [];
   const quoteData = [];
+  const makePlatforms = (quote) => {
+    const untypedWords = quote.split('');
+    untypedWords.forEach((letter, index) => {
+      words.push(letter);
+      add([
+        text(letter),
+        pos(index * 50 + 300, 360),
+        opacity(0.33),
+        scale(6),
+        `letter${index}`,
+      ]);
+    });
+    const endPlatform = add([
+      rect(2000, 360),
+      pos(untypedWords.length * 50 + 300, 360),
+      area(),
+      solid(),
+      color(255, 255, 255),
+    ]);
+    const finishLine = add([
+      rect(10, 10),
+      pos(untypedWords.length * 50 + 600, 350),
+      area(),
+      solid(),
+      color(0, 0, 0),
+      'end',
+    ]);
+  };
   load(
     new Promise(async () => {
       try {
@@ -72,59 +101,16 @@ scene('game', (difficulty) => {
           timeout: 1000,
         });
         quoteData.push(response.data);
-        const quote = response.data.content;
-        const untypedWords = quote.split('');
-        untypedWords.forEach((letter, index) => {
-          words.push(letter);
-          add([
-            text(letter),
-            pos(index * 50 + 300, 360),
-            opacity(0.33),
-            scale(6),
-            `letter${index}`,
-          ]);
-        });
-        const endPlatform = add([
-          rect(2000, 360),
-          pos(untypedWords.length * 50 + 300, 360),
-          area(),
-          solid(),
-          color(255, 255, 255),
-        ]);
-        const finishLine = add([
-          rect(10, 10),
-          pos(untypedWords.length * 50 + 600, 350),
-          area(),
-          solid(),
-          color(0, 0, 0),
-          'end',
-        ]);
+        makePlatforms(response.data.content);
       } catch (error) {
         console.log(error);
         const quote = {
           content:
-            'Hello! This quote is generated if the random quote API fails',
+            "Hello! This quote is generated if the Quotable API cannot be reached. Make sure your internet is connected, or the only quote you'll be able to see is this one!",
           author: 'Omar Abbasi',
         };
         quoteData.push(quote);
-        const untypedWords = quote.content.split('');
-        untypedWords.forEach((letter, index) => {
-          words.push(letter);
-          add([
-            text(letter),
-            pos(index * 50 + 300, 360),
-            opacity(0.33),
-            scale(6),
-          ]);
-        });
-        add([
-          rect(100, 3600),
-          pos(untypedWords.length * 50 + 300, 360),
-          area(),
-          solid(),
-          color(255, 255, 255),
-          'end',
-        ]);
+        makePlatforms(quote.content);
       }
     })
   );
@@ -143,7 +129,7 @@ scene('game', (difficulty) => {
     scale(3),
   ]);
 
-  //---------TYPED OBJECTS
+  //---------TYPED PLATFORMS
 
   const typedWords = [];
   const underline = add([rect(30, 5), pos(300, 420)]);
@@ -178,7 +164,7 @@ scene('game', (difficulty) => {
     ]);
   };
 
-  //---------TYPING
+  //---------PLAYER TYPING
 
   const wpm = add([rect(0, 0), pos(-200, 360), move(RIGHT, speed)]);
 
