@@ -29,36 +29,26 @@ export default (name, score) => {
       if (highScores.length > 10) highScores = highScores.slice(0, 10);
 
       highScores.forEach((highscore, index) => {
+        let r = 255;
         if (
           highscore.name.toUpperCase() === name &&
           highscore.score === score
         ) {
-          add([
-            text(
-              `${index + 1}. ${highscore.name.toUpperCase()} ............... ${
-                highscore.score
-              }`
-            ),
-            pos(CENTER, (index + 2) * 50),
-            scale(3),
-            color(0, 255, 255),
-            origin('center'),
-          ]);
+          r = 0;
           isHighScore = true;
-        } else {
-          add([
-            text(
-              `${index + 1}. ${highscore.name.toUpperCase()} ............... ${
-                highscore.score
-              }`
-            ),
-            pos(CENTER, (index + 2) * 50),
-            scale(3),
-            origin('center'),
-          ]);
         }
+        add([
+          text(
+            `${index + 1}. ${highscore.name.toUpperCase()} ............... ${
+              highscore.score
+            }`
+          ),
+          pos(CENTER, (index + 2) * 50),
+          scale(3),
+          color(r, 255, 255),
+          origin('center'),
+        ]);
       });
-      console.log(highScores);
     });
   } catch (error) {
     console.log(error);
