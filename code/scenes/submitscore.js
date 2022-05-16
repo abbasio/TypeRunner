@@ -57,12 +57,12 @@ export default (score) => {
     name = name.slice(0, name.length - 1);
   });
   onKeyPress('enter', () => {
-    if (name.length) {
-      saveScore(name, score);
+    if (name.length === 3) {
+      saveScore(name.toUpperCase(), score);
       play('select');
       go('highscores', name.toUpperCase(), score);
     } else {
-      warning.text = 'Name cannot be empty!';
+      warning.text = 'Name must be 3 letters!';
       shake();
       play('error');
     }
