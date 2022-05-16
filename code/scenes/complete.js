@@ -98,15 +98,18 @@ export default (score, errors, difficulty, quote) => {
   ]);
 
   const buttons = get('button');
+
+  onUpdate(() => {
+    buttons[currentButton].selected = true;
+  });
+
   onUpdate('button', (button) => {
     if (button.selected) button.text = button.selectedText;
     else button.text = button.regularText;
-    if (button.num === currentButton) button.selected = true;
     if (button.isHovering()) {
       currentButton = button.num;
     } else {
       if (button.num !== currentButton) button.selected = false;
-      else button.selected = true;
     }
   });
 
