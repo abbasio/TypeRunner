@@ -1,7 +1,7 @@
 import { DEFAULT_WIDTH } from '../main';
 export default (score, errors, difficulty, quote) => {
   const CENTER = DEFAULT_WIDTH / 2;
-  let totalScore = (score - errors * 100) * difficulty;
+  let totalScore = Math.max((score * difficulty) - errors * 100, 0);
   add([
     text('QUOTE COMPLETE!'),
     pos(CENTER, 50),
@@ -35,7 +35,7 @@ export default (score, errors, difficulty, quote) => {
     ]);
   } else {
     add([
-      text(`ERRORS: ${errors}`),
+      text(`ERRORS: -${errors * 100}`),
       pos(CENTER, 250),
       color(255, 0, 0),
       scale(3),
