@@ -1,5 +1,5 @@
 import { DEFAULT_WIDTH } from '../main';
-export default (score, errors, difficulty, quote) => {
+export default (score, errors, difficulty, quote, wordsPerMinuteValue) => {
   const CENTER = DEFAULT_WIDTH / 2;
   let totalScore = Math.max((score * difficulty) - errors * 100, 0);
   add([
@@ -7,6 +7,13 @@ export default (score, errors, difficulty, quote) => {
     pos(CENTER, 50),
     scale(4),
     color(0, 255, 0),
+    origin('center'),
+  ]);
+
+  add([
+    text(`WPM: ${Math.round(wordsPerMinuteValue)}`),
+    pos(CENTER, 100),
+    scale(3),
     origin('center'),
   ]);
 

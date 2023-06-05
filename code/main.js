@@ -66,8 +66,11 @@ scene('game', (difficulty) => {
   //---------MAKE PLATFORMS FROM QUOTE
   const words = [];
   const quoteData = [];
+  let quoteLength = 0;
   const makePlatforms = (quote) => {
     const untypedWords = quote.split('');
+    quoteLength = untypedWords.length
+    console.log(quoteLength)
     untypedWords.forEach((letter, index) => {
       words.push(letter);
       add([
@@ -116,7 +119,8 @@ scene('game', (difficulty) => {
   );
 
   //---------SCORING
-
+  
+  let timer = 0;
   let scoreValue = 0;
   const score = add([text('SCORE: 0', pos(0, 0)), fixed(), scale(3)]);
   let errorValue = 0;
@@ -128,6 +132,7 @@ scene('game', (difficulty) => {
     color(255, 255, 255),
     scale(3),
   ]);
+  let wordsPerMinuteValue;
 
   //---------TYPED PLATFORMS
 
@@ -179,9 +184,13 @@ scene('game', (difficulty) => {
         redLetter(char, index);
       }
     }
+    if (index === words.length - 1){
+      wordsPerMinuteValue = ((quoteLength / 5) - errorValue) / (timer / 60)
+    }
   });
 
   onUpdate(() => {
+    timer += dt();
     camPos(wpm.pos);
     score.text = `SCORE: ${scoreValue}`;
     errors.text = `ERRORS: ${errorValue}`;
@@ -208,7 +217,7 @@ scene('game', (difficulty) => {
 
   runner.onCollide('end', () => {
     play('win');
-    go('complete', scoreValue, errorValue, difficulty + 1, quoteData[0]);
+    go('complete', scoreValue, errorValue, difficulty + 1, quoteData[0], wordsPerMinuteValue);
   });
 });
 
