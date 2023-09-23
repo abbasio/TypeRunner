@@ -13,7 +13,7 @@ Incorrect inputs slow the player down. Typing too slowly, or making too many typ
 
 The game is completed if the player successfully types the full quote. The player is scored based on the amount of errors made and the difficulty level. High scores can be submitted to an online leaderboard, hosted with Firebase, which displays the top 10 scores in-game.
 
-A desktop version of the game is available for download via itch, bundled with Electron. Currently only macOS version available - specifically for arm64 CPUs - but more versions will be available in the future.
+A desktop version of the game is available for download via itch, bundled with Electron.
 
 
 # CREDITS:
