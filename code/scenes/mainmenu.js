@@ -63,22 +63,6 @@ export default () => {
     'impossible',
     'button',
   ]);
-  add([
-    text('View Online Leaderboard'),
-    pos(CENTER, 610),
-    origin('center'),
-    area({ scale: 3 }),
-    scale(2),
-    {
-      num: 4,
-      selected: false,
-      regularText: 'View Online Leaderboard',
-      selectedText: '> View Online Leaderboard',
-    },
-    'high-score',
-    'button',
-  ]);
-
   const buttons = get('button');
 
   onUpdate(() => {
@@ -105,14 +89,12 @@ export default () => {
   onKeyPress('enter', () => {
     play('select');
     const selectedButton = buttons.filter((button) => button.selected);
-    if (selectedButton[0].num === 4) go('highscores');
-    else go('game', selectedButton[0].num);
+    go('game', selectedButton[0].num);
   });
 
   onClick('easy', () => go('game', 0));
   onClick('medium', () => go('game', 1));
   onClick('hard', () => go('game', 2));
   onClick('impossible', () => go('game', 3));
-  onClick('high-score', () => go('highscores'));
   onClick('button', () => play('select'));
 };

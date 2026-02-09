@@ -52,28 +52,13 @@ export default (score, errors, difficulty, quote) => {
 
   let currentButton = 0;
   add([
-    text('Submit Score'),
-    pos(CENTER, 400),
-    origin('center'),
-    area({ scale: 3 }),
-    scale(2),
-    {
-      num: 0,
-      selected: false,
-      regularText: 'Submit Score',
-      selectedText: '> Submit Score',
-    },
-    'button',
-    'submitScore',
-  ]);
-  add([
     text('Retry'),
     pos(CENTER, 450),
     origin('center'),
     area({ scale: 3 }),
     scale(2),
     {
-      num: 1,
+      num: 0,
       selected: false,
       regularText: 'Retry',
       selectedText: '> Retry',
@@ -88,7 +73,7 @@ export default (score, errors, difficulty, quote) => {
     area({ scale: 3 }),
     scale(2),
     {
-      num: 2,
+      num: 1,
       selected: false,
       regularText: 'Return to Menu',
       selectedText: '> Return to Menu',
@@ -124,14 +109,12 @@ export default (score, errors, difficulty, quote) => {
   onKeyPress('enter', () => {
     play('select');
     const selectedButton = buttons.filter((button) => button.selected);
-    if (selectedButton[0].num === 0) go('submitscore', totalScore);
-    if (selectedButton[0].num === 1) go('game', difficulty - 1);
-    if (selectedButton[0].num === 2) go('menu');
+    if (selectedButton[0].num === 1) go ('menu');
+    else go('game', difficulty - 1);
   });
 
   onClick('retry', () => go('game', difficulty - 1));
   onClick('menu', () => go('menu'));
-  onClick('submitScore', () => go('submitscore', totalScore));
   onClick('button', () => play('select'));
 
   add([

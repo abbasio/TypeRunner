@@ -1,13 +1,11 @@
 /* eslint-disable no-undef */
 import kaboom from 'kaboom';
 import load from './load';
-import axios from 'axios';
+import quotes from "./quotes.json"
 
 import mainmenu from './scenes/mainmenu';
 import gameover from './scenes/gameover';
 import complete from './scenes/complete';
-import submitscore from './scenes/submitscore';
-import highscores from './scenes/highscores';
 
 //---------SETUP
 const ratio = Math.max(
@@ -78,14 +76,14 @@ scene('game', (difficulty) => {
         `letter${index}`,
       ]);
     });
-    const endPlatform = add([
+    add([
       rect(2000, 360),
       pos(untypedWords.length * 50 + 300, 360),
       area(),
       solid(),
       color(255, 255, 255),
     ]);
-    const finishLine = add([
+    add([
       rect(10, 10),
       pos(untypedWords.length * 50 + 600, 350),
       area(),
@@ -97,16 +95,16 @@ scene('game', (difficulty) => {
   load(
     new Promise(async () => {
       try {
-        const response = await axios.get('https://api.quotable.io/random', {
-          timeout: 1000,
-        });
-        quoteData.push(response.data);
-        makePlatforms(response.data.content);
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const randomQuote = quotes[randomIndex]
+        quoteData.push(randomQuote);
+        const quoteContent = randomQuote.content;
+        makePlatforms(quoteContent)
       } catch (error) {
         console.log(error);
         const quote = {
           content:
-            "Hello! This quote is generated if the Quotable API cannot be reached. Make sure your internet is connected, or the only quote you'll be able to see is this one!",
+            "Hello! This quote is generated if the quotes JSON cannot be loaded properly.",
           author: 'Omar Abbasi',
         };
         quoteData.push(quote);
@@ -216,7 +214,5 @@ scene('game', (difficulty) => {
 scene('complete', complete);
 scene('gameover', gameover);
 scene('menu', mainmenu);
-scene('submitscore', submitscore);
-scene('highscores', highscores);
 
 go('menu');
