@@ -1,6 +1,7 @@
 # TYPE/RUNNER
 
 ## [Play it on itch.io!](https://abbasio.itch.io/typerunner)
+## Note - the code for the web-hosted version of TypeRunner lives on the [web-build branch](https://github.com/abbasio/TypeRunner/tree/web-build)
 
 TYPE/RUNNER is a 2D platforming/typing game hybrid built with JavaScript using [Kaboom.js](https://kaboomjs.com/).
 
